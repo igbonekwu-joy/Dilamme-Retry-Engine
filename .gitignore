@@ -1,3 +1,6 @@
 node_modules
 .env
 task_retry_engine.db
+task_retry_engine.db-shm
+task_retry_engine.db-wal
+logfile.log
