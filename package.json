@@ -7,7 +7,8 @@
     "dev": "nodemon server.js",
     "start": "node server.js",
     "migrate": "node src/migrations/migrate.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "mock": "node test/mockServer.js",
+    "test": "node test/testScript.js"
   },
   "keywords": [],
   "author": "",
