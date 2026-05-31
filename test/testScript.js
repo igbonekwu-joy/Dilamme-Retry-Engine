@@ -3,7 +3,7 @@ import env from '../src/config/env.js';
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const BASE_URL = `http://localhost:${env.PORT || 5000}`;
-const MOCK_URL = 'http://localhost:4000';
+const MOCK_URL = `http://localhost:${env.MOCK_SERVER_PORT || 4000}`;
 
 // Helper: submit a job to the base retry engine
 async function submitJob(url, method = 'GET', options = {}) {

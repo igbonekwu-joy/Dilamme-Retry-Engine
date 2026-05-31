@@ -1,14 +1,14 @@
 import express from 'express';
+import env from '../src/config/env.js';
 
 const app = express();
-const PORT = 4000;
+const PORT = env.MOCK_SERVER_PORT || 4000;
 
 app.use(express.json());
 
 // Track how many times each endpoint has been called
 const callCounts = {};
 
-// ─────────────────────────────────────────
 // Endpoint 1: fails 3 times then succeeds
 // ─────────────────────────────────────────
 app.all('/mock', (req, res) => {
@@ -29,7 +29,6 @@ app.all('/mock', (req, res) => {
   return res.status(200).json({ message: 'Finally succeeded!', attempt: count });
 });
 
-// ─────────────────────────────────────────
 // Endpoint 2: always returns 404 (terminal)
 // ─────────────────────────────────────────
 app.all('/not-found', (req, res) => {
@@ -37,7 +36,6 @@ app.all('/not-found', (req, res) => {
   return res.status(404).json({ error: 'Not Found' });
 });
 
-// ─────────────────────────────────────────
 // Endpoint 3: always returns 500 (dead-letter)
 // ─────────────────────────────────────────
 app.all('/always-fail', (req, res) => {
@@ -48,7 +46,6 @@ app.all('/always-fail', (req, res) => {
   return res.status(500).json({ error: 'Always fails' });
 });
 
-// ─────────────────────────────────────────
 // Reset call counts between test runs
 // ─────────────────────────────────────────
 app.post('/reset', (req, res) => {
