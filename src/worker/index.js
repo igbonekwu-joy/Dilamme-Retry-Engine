@@ -30,6 +30,15 @@ async function processDueRequests() {
   winston.info(`Worker: found ${dueRequests.length} due job(s)`);
 
   for (const request of dueRequests) {
+    const locked = db.prepare(`
+      UPDATE requests
+      SET status = 'processing', updatedAt = ?
+      WHERE id = ? AND status IN ('pending', 'retrying')
+    `).run(Date.now(), request.id);
+
+    // another tick already grabbed it, so skip
+    if (locked.changes === 0) continue;
+
     await handleRequest(request);
   }
 }
