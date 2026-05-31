@@ -313,7 +313,7 @@ curl "http://localhost:5000/requests?status=retrying"
 
 > Screenshot of `GET /requests/:id` showing a request that failed twice then succeeded on the third attempt.
 
-![GET /requests/:id attempt history](./screenshots/Screenshot-2026-05-31.png)
+![GET /requests/:id attempt history](./screenshots/Screenshot-2026-05-31-1.png)
 ![GET /requests/:id attempt history](./screenshots/Screenshot-2026-05-31-2.png)
 ![GET /requests/:id attempt history](./screenshots/Screenshot-2026-05-31-3.png)
 
