@@ -168,8 +168,8 @@ Now 500 jobs that all failed at the same time will retry at slightly different t
 
 HTTP status codes tell us the nature of the failure:
 
-- **5xx** — server failure. Server was overloaded, crashed, or had a temporary issue. The same request might succeed if we try again later. Therefore, it is worth retrying.
-- **4xx** — the request was wrong. A 404 means the resource doesn't exist. A 422 means your data was invalid. A 401 means you're not authenticated. None of these will fix themselves no matter how many times you retry — retrying just wastes resources and adds noise to logs.
+- **5xx**: server failure. Server was overloaded, crashed, or had a temporary issue. The same request might succeed if we try again later. Therefore, it is worth retrying.
+- **4xx**: the request was wrong. A 404 means the resource doesn't exist. A 422 means your data was invalid. A 401 means you're not authenticated. None of these will fix themselves no matter how many times you retry. So retrying just wastes resources and adds noise to logs.
 
 So this is the rule: retry things that could possibly change, stop immediately on things that would never.
 
@@ -319,10 +319,10 @@ curl "http://localhost:5000/requests?status=retrying"
 
 ## What I Struggled With
 
-The hardest bug to track down was the worker processing the same job multiple times. Because `fetch()` is async, the worker would pick up a job, start the HTTP call, and then on the next 500ms tick ( before the fetch is returned) pick up the same job again. The job would end up with 2 or 3 attempt rows in the database for what was supposed to be 1 attempt.
+- The hardest bug to track down was the worker processing the same job multiple times. Because `fetch()` is async, the worker would pick up a job, start the HTTP call, and then on the next 500ms tick ( before the fetch is returned) pick up the same job again. The job would end up with 2 or 3 attempt rows in the database for what was supposed to be 1 attempt.
 The fix was to lock the job synchronously before doing anything async. Since `better-sqlite3` is synchronous, the `UPDATE status = 'processing'` runs and commits instantly — before any `await`. By the time the next worker tick runs, the row is already `processing` and the SELECT query ignores it.
 
-I initially set `nextRetryAt` only when scheduling a retry, which meant on the first attempt the worker would find the row but `nextRetryAt` was null. I had to set `nextRetryAt = now` at insert time so that the first attempt is picked up immediately.
+- I initially set `nextRetryAt` only when scheduling a retry, which meant on the first attempt the worker would find the row but `nextRetryAt` was null. I had to set `nextRetryAt = now` at insert time so that the first attempt is picked up immediately.
 
 ---
 
