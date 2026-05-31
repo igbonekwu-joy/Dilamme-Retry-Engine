@@ -1,8 +1,10 @@
 import express from 'express';
-import { saveRequest } from './request.controller.js';
+import { saveRequest, getRequest } from './request.controller.js';
 
 const router = express.Router();
 
-router.post('/', saveRequest);
+router.post('/request', saveRequest);
+
+router.get('/requests/:id', getRequest);
 
 export default router; 

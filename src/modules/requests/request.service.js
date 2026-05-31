@@ -41,3 +41,36 @@ export const storeRequest = async (req, res) => {
       } 
     };
 }
+
+export const fetchRequest = async (id) => {
+  const request = db.prepare(`
+    SELECT * FROM requests WHERE id = ?
+  `).get(id);
+
+  if (!request) {
+    return { 
+      statusCode: StatusCodes.NOT_FOUND, 
+      data: { error: `Request ${id} not found` } 
+    };
+  }
+
+  const attempts = db.prepare(`
+    SELECT * FROM attempts
+    WHERE requestId = ?
+    ORDER BY attemptNum ASC
+  `).all(id);
+
+  const parsedRequest = {
+    ...request,
+    body: request.body ? JSON.parse(request.body) : null,
+    result: request.result ? tryParseJson(request.result) : null,
+  };
+
+  return { 
+    statusCode: StatusCodes.OK, 
+    data: { 
+      ...parsedRequest,
+      attempts,
+    } 
+  };
+}
