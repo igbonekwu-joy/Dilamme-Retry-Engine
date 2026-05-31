@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import db from '../../config/client.js';
+import db from '../config/client.js';
 import { StatusCodes } from 'http-status-codes';
 
 export const storeRequest = async (req, res) => {
