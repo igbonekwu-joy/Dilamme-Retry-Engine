@@ -74,3 +74,51 @@ export const fetchRequest = async (id) => {
     } 
   };
 }
+
+export const filterRequestsByStatus = async (status) => {
+  const validStatuses = ['pending', 'processing', 'retrying', 'completed', 'failed'];
+
+  if (status && !validStatuses.includes(status)) {
+    return { 
+      statusCode: StatusCodes.BAD_REQUEST, 
+      data: {
+        error: `Invalid status. Must be one of: ${validStatuses.join(', ')}`
+      }
+    };
+  }
+
+  const requests = status
+    ? db.prepare(`
+        SELECT * FROM requests
+        WHERE status = ?
+        ORDER BY createdAt DESC
+      `).all(status)
+    : db.prepare(`
+        SELECT * FROM requests
+        ORDER BY createdAt DESC
+      `).all();
+
+  // parse body and result
+  const parsedRequests = requests.map((request) => ({
+    ...request,
+    body: request.body ? JSON.parse(request.body) : null,
+    result: request.result ? tryParseJson(request.result) : null,
+  }));
+
+  return { 
+    statusCode: StatusCodes.OK, 
+    data: {
+      total: parsedRequests.length,
+      status: status || 'all',
+      requests: parsedRequests,
+    }
+  };
+}
+
+function tryParseJson(str) {
+  try {
+    return JSON.parse(str);
+  } catch {
+    return str;
+  }
+}
