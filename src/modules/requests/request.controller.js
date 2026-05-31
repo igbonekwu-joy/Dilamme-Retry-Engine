@@ -4,5 +4,5 @@ import { storeRequest } from "./request.service.js";
 export const saveRequest = async (req, res) => {
     const data = await storeRequest(req, res);
 
-    res.status(data.statusCode).json(data);
+    res.status(data.statusCode).json(data.data);
 };

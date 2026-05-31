@@ -4,10 +4,14 @@ import { StatusCodes } from 'http-status-codes';
 
 export const storeRequest = async (req, res) => {
     const { url, method, body, maxRetries = 5, backoffMs = 1000 } = req.body;
-    console.log(body);
 
     if (!url || !method) {
-        return { statusCode: StatusCodes.BAD_REQUEST, error: 'url and method are required' };
+        return { 
+          statusCode: StatusCodes.BAD_REQUEST, 
+          data: { 
+            error: 'url and method are required' 
+          } 
+        };
     }
 
     const id = uuidv4();
@@ -25,9 +29,15 @@ export const storeRequest = async (req, res) => {
         body: body ? JSON.stringify(body) : null, 
         maxRetries,
         backoffMs,
-        nextRetryAt: now,   // due immediately — worker can pick it up right away
+        nextRetryAt: now,   // due immediately 
         now
     });
 
-    return { statusCode: StatusCodes.ACCEPTED, status: 'processing', requestId: id };
+    return { 
+      statusCode: StatusCodes.ACCEPTED, 
+      data: { 
+        id,
+        status: 'pending'
+      } 
+    };
 }
