@@ -4,20 +4,6 @@ A small HTTP service that retries failed requests with exponential backoff and j
 
 ---
 
-## Table of Contents
-
-- [Setup](#setup)
-- [Architecture](#architecture)
-- [Core Concepts](#core-concepts)
-- [API Reference](#api-reference)
-- [Screenshot](#screenshot)
-- [What I Struggled With](#what-i-struggled-with)
-- [What I Learned](#what-i-learned)
-- [Resources](#resources)
-- [Reflection](#reflection)
-
----
-
 ## Setup
 
 ### Requirements
@@ -49,7 +35,7 @@ npm run dev
 
 Server runs on `http://localhost:5000`.
 
-### Run the Test Script
+### To Run the Test Script
 
 You need two terminals for this.
 
@@ -63,7 +49,7 @@ npm run mock
 npm test
 ```
 
-The test script submits three jobs and prints the attempt history for each — showing backoff doubling, jitter, 4xx terminal behaviour, and dead-lettering.
+The test script submits three jobs and prints the attempt history for each, showing backoff doubling, jitter, 4xx terminal behaviour, and dead-lettering.
 
 ---
 
