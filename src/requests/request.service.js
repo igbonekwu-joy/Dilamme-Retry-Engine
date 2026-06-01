@@ -2,16 +2,35 @@ import { v4 as uuidv4 } from 'uuid';
 import db from '../config/client.js';
 import { StatusCodes } from 'http-status-codes';
 
+const VALID_HTTP_METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'];
+
 export const storeRequest = async (req, res) => {
     const { url, method, body, maxRetries = 5, backoffMs = 1000 } = req.body;
 
     if (!url || !method) {
-        return { 
-          statusCode: StatusCodes.BAD_REQUEST, 
-          data: { 
-            error: 'url and method are required' 
-          } 
-        };
+      return { 
+        statusCode: StatusCodes.BAD_REQUEST, 
+        data: { 
+          error: 'url and method are required' 
+        } 
+      };
+    }
+
+    if (!isValidHttpUrl(url)) {
+      return {
+        statusCode: StatusCodes.BAD_REQUEST,
+        data: { error: 'url must be a valid http or https URL' },
+      };
+    }
+
+    const normalizedMethod = method.toUpperCase();
+    if (!VALID_HTTP_METHODS.includes(normalizedMethod)) {
+      return {
+        statusCode: StatusCodes.BAD_REQUEST,
+        data: {
+          error: `Invalid method. Must be one of: ${VALID_HTTP_METHODS.join(', ')}`,
+        },
+      };
     }
 
     const id = uuidv4();
@@ -25,7 +44,7 @@ export const storeRequest = async (req, res) => {
     `).run({
         id,
         url,
-        method: method.toUpperCase(),
+        method: normalizedMethod,
         body: body ? JSON.stringify(body) : null, 
         maxRetries,
         backoffMs,
@@ -113,6 +132,15 @@ export const filterRequestsByStatus = async (status) => {
       requests: parsedRequests,
     }
   };
+}
+
+function isValidHttpUrl(url) {
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+  } catch {
+    return false;
+  }
 }
 
 function tryParseJson(str) {
