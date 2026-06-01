@@ -71,7 +71,7 @@ async function handleRequest(request) {
         winston.info(`← Response: ${statusCode}`);
 
         if (response.ok) {
-            // ── 2a. Success (2xx)
+            // Success (2xx)
             result = responseText;
             attemptStatus = 'succeeded';
 
@@ -88,7 +88,7 @@ async function handleRequest(request) {
             winston.info(`✓ Job ${request.id} completed on attempt #${attemptNum}`);
 
         } else if (statusCode >= 400 && statusCode < 500) {
-            // 4xx — terminal, never retry
+            // 4xx, never retry
             error = `HTTP ${statusCode} — not retrying (4xx is terminal)`;
             attemptStatus = 'failed';
 
@@ -104,7 +104,7 @@ async function handleRequest(request) {
             winston.info(`✗ Job ${request.id} permanently failed — ${error}`);
 
         } else {
-            // 5xx — schedule a retry
+            // 5xx, schedule a retry
             error = `HTTP ${statusCode}`;
             attemptStatus = 'failed';
 
@@ -144,7 +144,7 @@ async function handleRequest(request) {
 
 // Schedule retry
 function scheduleRetry(request, attemptNum, error) {
-    // If we've hit the limit — dead-letter it
+    // If a limit is hit, dead-letter it
     if (attemptNum >= request.maxRetries) {
         db.prepare(`
             UPDATE requests
