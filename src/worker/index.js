@@ -1,9 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import db from '../config/client.js';
 import winston from 'winston';
-import logger from '../config/logger.js';
-
-logger();
 
 const POLL_INTERVAL = 500;
 
