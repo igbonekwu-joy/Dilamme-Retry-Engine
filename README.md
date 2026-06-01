@@ -223,7 +223,7 @@ Get a single request and its full attempt history.
 
 **curl:**
 ```bash
-curl http://localhost:5000/requests/<id>
+curl http://localhost:5000/requests/a3f1c2d4-7e8b-4c2a-9f1d-3b5e6c7d8e9f
 ```
 
 **Response:**
@@ -242,7 +242,7 @@ curl http://localhost:5000/requests/<id>
   "updatedAt": 1717000000000,
   "attempts": [
     {
-      "id": "b1c2d3e4-...",
+      "id": "3c5b1886-b5dc-452b-9545-e43c44d04cf6",
       "requestId": "a3f1c2d4-7e8b-4c2a-9f1d-3b5e6c7d8e9f",
       "attemptNum": 1,
       "status": "failed",
@@ -252,7 +252,7 @@ curl http://localhost:5000/requests/<id>
       "createdAt": 1717000000000
     },
     {
-      "id": "c2d3e4f5-...",
+      "id": "a8eabb59-7f47-4189-adb1-4339e778066a",
       "requestId": "a3f1c2d4-7e8b-4c2a-9f1d-3b5e6c7d8e9f",
       "attemptNum": 2,
       "status": "failed",
@@ -262,7 +262,7 @@ curl http://localhost:5000/requests/<id>
       "createdAt": 1717000001043
     },
     {
-      "id": "d3e4f5g6-...",
+      "id": "70c1879d-1e44-4ac8-ab1c-5eb7dc5cce00",
       "requestId": "a3f1c2d4-7e8b-4c2a-9f1d-3b5e6c7d8e9f",
       "attemptNum": 3,
       "status": "succeeded",
@@ -345,7 +345,6 @@ The fix was to lock the job synchronously before doing anything async. Since `be
 - [better-sqlite3 docs](https://github.com/WiseLibs/better-sqlite3/blob/master/docs/api.md): mostly particularly the section on why it's synchronous
 - [MDN: fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API): reference for fetch options and response handling
 - [httpbin.org](https://httpbin.org): used as the mock external API during development for testing specific status codes
-- [Node.js: setInterval](https://nodejs.org/en/docs/guides/timers-in-node): understanding the event loop and how setInterval behaves with async callbacks
 
 ---
 
