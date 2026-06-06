@@ -46,8 +46,8 @@ export const storeRequest = async (req, res) => {
         url,
         method: normalizedMethod,
         body: body ? JSON.stringify(body) : null, 
-        maxRetries,
-        backoffMs,
+        maxRetries: maxRetries ?? 5,
+        backoffMs: backoffMs ?? 1000,
         nextRetryAt: now,   // due immediately 
         now
     });
